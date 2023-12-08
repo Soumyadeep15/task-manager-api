@@ -5,7 +5,7 @@ app.use(bodyParser.json())
 
 const userRouter = require('./router/router')
 
-
+const taskRouter = require('./router/taskRouter')
 //routes
 app.use('/create', userRouter)
 
@@ -15,7 +15,20 @@ app.use('/updateUser', userRouter)
 
 app.use('/deleteUser', userRouter)
 
-app.use('/updateTask', userRouter)
+//task routes
+
+app.use('/createTask', taskRouter)
+
+app.use('/showTask', taskRouter)
+
+app.use('/updateTask', taskRouter)
+
+app.use('/deleteTask', taskRouter)
+
+app.use('/both', taskRouter)
+
+
+
 
 
 

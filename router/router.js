@@ -1,10 +1,12 @@
-const {showData, updateUser, deleteUser, createUserWithTasks, updatetask} = require('../controller/userController')
+const {showData, updateUser, deleteUser, create} = require('../controller/userController')
 const router = require('express').Router()
 
-router.post('/', createUserWithTasks)
+//user-routes
+router.post('/', create)
 router.get('/', showData)
 router.put('/', updateUser)
 router.delete('/', deleteUser)
-router.put('/', updatetask)
+
+
 
 module.exports = router
