@@ -14,8 +14,10 @@ try {
 const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
-db.user = require('../models/user') (sequelize, DataTypes)
-db.task = require('../models/task') (sequelize, DataTypes)
+db.user = require('../models').user (sequelize, DataTypes)
+db.task = require('../models').task (sequelize, DataTypes)
+
+
 
 db.user.hasMany(db.task, { foreignKey: 'userId' })
 db.task.belongsTo(db.user)

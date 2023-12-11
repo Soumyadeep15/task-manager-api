@@ -1,4 +1,4 @@
-const db = require('../database/database')
+const db = require('../database')
 const user = db.user
 const task = db.task
 

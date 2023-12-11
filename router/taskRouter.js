@@ -1,4 +1,4 @@
-const {createTask, showTaskData, updateTask, deleteTask, showBothData} = require('../controller/userController')
+const {createTask, showTaskData, updateTask, deleteTask, showBothData} = require('../controller')
 
 const routerTask = require('express').Router()
 
