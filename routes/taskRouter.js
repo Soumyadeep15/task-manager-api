@@ -2,14 +2,13 @@ const {createTask, showTaskData, updateTask, deleteTask, showBothData} = require
 
 const routerTask = require('express').Router()
 
-routerTask.post('/', createTask)
+routerTask.post('/createTask', createTask)
 
-// routerTask.get('/', showTaskData)
+routerTask.get('/readBothTable', showBothData)
 
-routerTask.put('/', updateTask)
+routerTask.put('/updateTask', updateTask)
 
-routerTask.delete('/', deleteTask)
+routerTask.delete('/deleteTask', deleteTask)
 
-routerTask.get('/', showBothData)
 
 module.exports = routerTask
