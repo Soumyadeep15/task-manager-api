@@ -1,11 +1,12 @@
 const db = require('../database')
 const user = db.user
 const task = db.task
+const usertask = db.user_task
 
 //user-crud
 const create = async (req, res) => {
     const userData = req.body
-    await user.create(userData) 
+    await user.create(userData)
     res.status(200).json({
         message: 'data inserted in user table',
     })
@@ -49,7 +50,7 @@ const createTask = async (req, res) => {
     })
 }
 
-const showTaskData = async(req, res) => {
+const showTaskData = async (req, res) => {
     const taskData = await task.findAll()
     res.status(200).json({
         result: taskData
@@ -59,7 +60,7 @@ const showTaskData = async(req, res) => {
 const updateTask = async (req, res) => {
     const { title, description, status, userId } = req.body
     const taskId = req.body.id
-    await task.update({ title, description, status, userId }, {where: {id: taskId}})
+    await task.update({ title, description, status, userId }, { where: { id: taskId } })
 
     res.status(200).json({
         message: 'task data updated'
@@ -84,7 +85,28 @@ const showBothData = async (req, res) => {
     })
 }
 
+//user_task crud
+
+const createJunction = async (req, res) => {
+    // console.log(req.body)
+    const { userId, taskId } = req.body
+    await usertask.create({ userId, taskId })
+    res.status(200).json({
+        message: 'data inserted in junction table',
+    })
+}
 
 
 
-module.exports = { create, showData, updateUser, deleteUser, updateTask, createTask, showTaskData, deleteTask, showBothData }
+module.exports = {
+    create,
+    showData,
+    updateUser,
+    deleteUser,
+    updateTask,
+    createTask,
+    showTaskData,
+    deleteTask,
+    showBothData,
+    createJunction
+}

@@ -10,9 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         status: {
             type: DataTypes.ENUM('completed', 'incomplete'),
             defaultValue: 'incomplete',
-        },
-        userId: {
-            type: DataTypes.INTEGER
         }
     },
         { tableName: 'task' }
