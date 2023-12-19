@@ -1,4 +1,4 @@
-const {showData, updateUser, deleteUser, create} = require('../controller')
+const {showData, updateUser, deleteUser, create} = require('../controller').user
 const router = require('express').Router()
 
 //user-routes
