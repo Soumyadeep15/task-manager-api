@@ -1,27 +1,12 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
+require('dotenv').config()
 app.use(bodyParser.json())
 
-const userRouter = require('./router/router')
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
-//routes
-app.use('/create', userRouter)
+require('./routes')(app)
 
-app.use('/showData', userRouter)
-
-app.use('/updateUser', userRouter)
-
-app.use('/deleteUser', userRouter)
-
-app.use('/updateTask', userRouter)
-
-
-
-
-
-
-
-
-app.listen(3001, () => {console.log('listening on port 3001')})
+app.listen(process.env.APP_PORT, () => {console.log(`listening on port ${process.env.APP_PORT}`)})
