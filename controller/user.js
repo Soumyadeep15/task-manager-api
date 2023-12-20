@@ -1,9 +1,12 @@
 const db = require('../database')
+const bcrypt = require('bcrypt')
 const user = db.user
 
 const create = async (req, res) => {
-    const userData = req.body
-    await user.create(userData)
+    let {firstName, lastName, password} = req.body
+    const hashedPassword = bcrypt.hashSync(password, 10)
+    password = hashedPassword
+    await user.create({firstName, lastName, password})
     res.status(200).json({
         message: 'data inserted in user table',
     })

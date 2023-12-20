@@ -1,11 +1,23 @@
 const db = require('../database')
+const bcrypt = require('bcrypt')
 const task = db.task
+const user = db.user
 
 const createTask = async (req, res) => {
-    await task.create(req.body)
-    res.status(200).json({
-        message: 'data inserted into task table'
-    })
+    const { firstName, lastName, password, title, description, status } = req.body
+
+    const data = await user.findOne({ where: { firstName } })
+
+    if (!data) res.status(400).json({ message: 'invalid' })
+
+    const isPasswordValid = await bcrypt.compare(password, data.password)
+
+    if (isPasswordValid) {
+        await task.create({ title, description, status })
+        res.status(200).json({
+            message: 'data inserted into task table'
+        })
+    } else res.status(400).json({ message: 'wrong password' })
 }
 
 const showTaskData = async (req, res) => {
