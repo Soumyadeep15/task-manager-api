@@ -2,22 +2,32 @@ const db = require('../database')
 const bcrypt = require('bcrypt')
 const task = db.task
 const user = db.user
+const jwt = require('jsonwebtoken')
+
+
 
 const createTask = async (req, res) => {
-    const { firstName, lastName, password, title, description, status } = req.body
+    const { authorization } = req.headers
+    const token = authorization
+    const decodedData = jwt.decode(token)
+    const userId = decodedData.userId
+    const firstName = decodedData.firstName
+    const {title, description, status} = req.body
+    await task.create({title, description, status, userId})
+    res.status(200).json({
+        status: "success",
+        message: `${firstName} logged in and task created for the ${firstName}`
+    })  
+}
 
-    const data = await user.findOne({ where: { firstName } })
+const showBothData = async (req, res) => {
+    const data = await user.findAll({
+        include: task
+    })
 
-    if (!data) res.status(400).json({ message: 'invalid' })
-
-    const isPasswordValid = await bcrypt.compare(password, data.password)
-
-    if (isPasswordValid) {
-        await task.create({ title, description, status })
-        res.status(200).json({
-            message: 'data inserted into task table'
-        })
-    } else res.status(400).json({ message: 'wrong password' })
+    res.status(200).json({
+        data: data
+    })
 }
 
 const showTaskData = async (req, res) => {
@@ -45,9 +55,14 @@ const deleteTask = async (req, res) => {
     })
 }
 
+
+
+
+
 module.exports = {
     createTask,
     showTaskData,
     updateTask,
-    deleteTask
+    deleteTask,
+    showBothData
 }
