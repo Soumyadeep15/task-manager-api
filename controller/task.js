@@ -16,16 +16,23 @@ const createTask = async (req, res) => {
     await task.create({title, description, status, userId})
     res.status(200).json({
         status: "success",
-        message: `${firstName} logged in and task created for the ${firstName}`
+        message: `${firstName} logged in and task created for ${firstName}`
     })  
 }
 
 const showBothData = async (req, res) => {
+    const token = req.headers.authorization
+    const decodedData = jwt.decode(token)
+    const userId = decodedData.userId
     const data = await user.findAll({
-        include: task
+        include: {
+            model: task,
+            where: { userId: userId}
+        }
     })
-
     res.status(200).json({
+        status: 'success',
+        message: `all data fetched for ${decodedData.firstName}`,
         data: data
     })
 }
@@ -39,8 +46,11 @@ const showTaskData = async (req, res) => {
 
 const updateTask = async (req, res) => {
     const { title, description, status } = req.body
-    const taskId = req.body.id
-    await task.update({ title, description, status }, { where: { id: taskId } })
+    const token = req.headers.authorization
+    const decodedData = jwt.decode(token)
+    const userId = decodedData.userId
+    // const taskId = req.body.id
+    await task.update({ title, description, status }, { where: { userId: userId } })
 
     res.status(200).json({
         message: 'task data updated'
@@ -54,10 +64,6 @@ const deleteTask = async (req, res) => {
         message: 'task deleted'
     })
 }
-
-
-
-
 
 module.exports = {
     createTask,
