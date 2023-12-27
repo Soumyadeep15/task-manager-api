@@ -1,5 +1,5 @@
 const db = require('../database')
-const bcrypt = require('bcrypt')
+// const bcrypt = require('bcrypt')
 const task = db.task
 const user = db.user
 const jwt = require('jsonwebtoken')

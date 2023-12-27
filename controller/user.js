@@ -5,15 +5,14 @@ require('dotenv')
 const user = db.user
 
 const create = async (req, res) => {
-    let {firstName, lastName, password} = req.body
+    let { firstName, lastName, password } = req.body
     const hashedPassword = bcrypt.hashSync(password, 10)
     password = hashedPassword
-    await user.create({firstName, lastName, password})
-    const saved_user = await user.findOne({ where: { firstName } })
-    const token = jwt.sign({userId: saved_user.id, firstName: saved_user.firstName}, process.env.JWT_SECRET_KEY, {expiresIn: '10d'})
+    await user.create({ firstName, lastName, password })
+    // const saved_user = await user.findOne({ where: { firstName } })
+    // const token = jwt.sign({ userId: saved_user.id, firstName: saved_user.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '10d' })
     res.status(200).json({
         message: 'data inserted in user table',
-        token: token
     })
 }
 
@@ -48,29 +47,28 @@ const deleteUser = async (req, res) => {
 }
 
 const userLogin = async (req, res) => {
-    const { firstName, password } = req.body
-    if(firstName && password) {
-        const userData = await user.findOne({ where: { firstName } })
-        const isCheck = bcrypt.compare(password, userData.password)
-        const token = jwt.sign({userId: userData.id, firstName: userData.firstName}, process.env.JWT_SECRET_KEY, {expiresIn: '10d'})
-        if((userData.firstName == firstName) && isCheck) {
-            res.status(200).json({
-               status: 'success',
-               message: 'logged in successfully',
-               token: token
-            })
+    try {
+        const { firstName, password } = req.body
+        if (firstName && password) {
+            const userData = await user.findOne({ where: { firstName } })
+            if (userData != null) {
+                const isMatch = await bcrypt.compare(password, userData.password)
+                if ((firstName == userData.firstName) && isMatch) {
+                    const token = jwt.sign({ userId: userData.id, firstName: userData.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '10d' })
+                    res.status(200).json({ status: 'success', message: 'login succesfully', token: token })
+                } else {
+                    res.status(400).json({ status: 'failed', message: 'wrong firstname or password' })
+                }
+            } else {
+                res.status(400).json({ status: 'failed', message: 'you are not a registered user' })
+            }
         } else {
-            res.status(400).json({
-                status: 'failed',
-                message: 'wrong name and password'
-            })
+            res.status(400).json({ status: 'failed', message: 'all fields are required' })
         }
-    } else {
-        res.status(400).json({
-            status: 'failed',
-            message: 'filled your details first'
-        })
+    } catch (error) {
+        res.status(400).json({ "status": "failed", "message": "Unable to Login" })
     }
+
 }
 
 module.exports = {
