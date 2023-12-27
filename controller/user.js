@@ -5,45 +5,73 @@ require('dotenv')
 const user = db.user
 
 const create = async (req, res) => {
-    let { firstName, lastName, password } = req.body
-    const hashedPassword = bcrypt.hashSync(password, 10)
-    password = hashedPassword
-    await user.create({ firstName, lastName, password })
-    // const saved_user = await user.findOne({ where: { firstName } })
-    // const token = jwt.sign({ userId: saved_user.id, firstName: saved_user.firstName }, process.env.JWT_SECRET_KEY, { expiresIn: '10d' })
-    res.status(200).json({
-        message: 'data inserted in user table',
-    })
+    try {
+        let { firstName, lastName, password } = req.body
+
+        if (firstName && lastName && password) {
+            const hashedPassword = bcrypt.hashSync(password, 10)
+            password = hashedPassword
+            await user.create({ firstName, lastName, password })
+            res.status(200).json({
+                status: 'success',
+                message: 'data inserted in user table',
+            })
+        } else {
+            res.status(400).json({ status: 'failed', message: 'fill out all the details' })
+        }
+    } catch (error) {
+        res.status(400).json({ status: 'failed', message: 'failed to insert create user' })
+    }
 }
 
 const showData = async (req, res) => {
-    const userData = await user.findAll()
-    res.status(200).json({
-        userdata: userData,
-    })
+    try {
+        const userData = await user.findAll()
+        res.status(200).json({
+            status: 'success',
+            userdata: userData,
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            message: 'failed to access user data'
+        })
+    }
 }
 
 const updateUser = async (req, res) => {
-    const { firstName, lastName } = req.body
-    const userId = req.body.id
-    await user.update({ firstName, lastName }, {
-        where: {
-            id: userId
-        }
-    })
-    res.status(200).json({
-        message: 'table data updated'
-    })
+    try {
+       const data = await user.update(req.body, {
+            where: {
+                id: req.params.id
+            }
+        })
+        res.status(200).json({
+            status: 'success',
+            message: 'table data updated',
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            message: 'failed to update user data'
+        })
+    }
 }
 
 
 
 const deleteUser = async (req, res) => {
-    const id = req.body.id
-    await user.destroy({ where: { id: id } })
-    res.status(200).json({
-        message: 'data removed'
-    })
+    try {
+        await user.destroy({ where: { id: req.params.id } })
+        res.status(200).json({
+            message: 'data removed'
+        })
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            message: 'failed to remove data'
+        })
+    }
 }
 
 const userLogin = async (req, res) => {
@@ -68,7 +96,6 @@ const userLogin = async (req, res) => {
     } catch (error) {
         res.status(400).json({ "status": "failed", "message": "Unable to Login" })
     }
-
 }
 
 module.exports = {

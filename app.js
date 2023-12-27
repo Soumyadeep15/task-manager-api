@@ -6,7 +6,8 @@ app.use(bodyParser.json())
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const port = process.env.APP_PORT || 3001
 
 require('./routes')(app)
 
-app.listen(process.env.APP_PORT, () => {console.log(`listening on port ${process.env.APP_PORT}`)})
+app.listen(port, () => {console.log(`listening on port ${port}`)})

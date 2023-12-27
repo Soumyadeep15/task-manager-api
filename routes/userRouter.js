@@ -6,9 +6,9 @@ router.post('/createUser', create)
 
 router.get('/readUserData', showData)
 
-router.put('/updateUser', updateUser)
+router.put('/updateUser/:id', updateUser)
 
-router.delete('/deleteUser', deleteUser)
+router.delete('/deleteUser/:id', deleteUser)
 
 router.post('/login', userLogin)
 
